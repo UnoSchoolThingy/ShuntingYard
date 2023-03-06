@@ -4,11 +4,21 @@
 */
 
 #include <iostream>
-#include <cstring>
+#include "Node.h"
 
 using namespace std;
 
 int main() {
-  // insane code 
+  Queue s;
+  for (char i = '0'; i <= '9'; i++) {
+    Node n(i);
+    cout << "Pushing " << i << "!\n";
+    s.push(n);
+  }
+  cout << "Hi!\n";
+  while (!s.empty()) {
+    cout << "Popping " << s.peek().data << "!\n";
+    s.pop();
+  }
   return 0;
 }
