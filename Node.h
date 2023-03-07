@@ -1,6 +1,6 @@
 #include <cstring>
 
-// This entire system totally sucks because it's copying the node a bunch of times but performance shouldn't really matter that much for this program so it's probably fine 
+// Kind of bad implementation but it works 
 
 struct Node {
   char data;
@@ -18,55 +18,59 @@ struct Node {
   }
 };
 
-struct NodeListElement { 
-  Node n;
-  NodeListElement* prev;
-  NodeListElement* next;
+template <typename T>
+struct ListElement { 
+  T n;
+  ListElement<T>* prev;
+  ListElement<T>* next;
 
-  NodeListElement() {
-    memset(this, 0x0, sizeof(NodeListElement));
+  ListElement() {
+    memset(this, 0x0, sizeof(ListElement<T>));
   }
 
-  NodeListElement(Node n) {
+  ListElement(T n) {
     this->n = n;
     prev = nullptr;
     next = nullptr;
   }
 };
 
+template <typename T>
 struct Stack {
-  NodeListElement* top;
+  ListElement<T>* topField;
 
   Stack() {
     memset(this, 0x0, sizeof(Stack));
   }
 
   bool empty() {
-    return top == nullptr;
+    return topField == nullptr;
   }
 
-  void push(Node nodeToAdd) {
-    NodeListElement* add = new NodeListElement(nodeToAdd);
-    NodeListElement* old = top;
-    top = add;
+  void push(T nodeToAdd) {
+    ListElement<T>* add = new ListElement(nodeToAdd);
+    ListElement<T>* old = topField;
+    topField = add;
     if (old == nullptr) return;
-    top->next = old;
+    topField->next = old;
   }
 
   void pop() {
-    NodeListElement* next = top->next;
-    delete top;
-    top = next;
+    ListElement<T>* next = topField->next;
+    delete topField;
+    topField = next;
   };
 
-  Node peek() {
-    return top->n;
+  // Peek function but renamed 
+  T top() {
+    return topField->n;
   }
 };
 
+template <typename T>
 struct Queue {
-  NodeListElement* start;
-  NodeListElement* end;
+  ListElement<T>* start;
+  ListElement<T>* end;
 
   Queue() {
     memset(this, 0x0, sizeof(Queue));
@@ -76,31 +80,33 @@ struct Queue {
     return start == nullptr;
   }
 
-  void push(Node nodeToAdd) {
-    NodeListElement* add = new NodeListElement(nodeToAdd);
-    NodeListElement* old = start;
+  // Enqueue 
+  void push(T nodeToAdd) {
+    ListElement<T>* add = new ListElement(nodeToAdd);
+    ListElement<T>* old = start;
     start = add;
     add->next = old;
     if (old == nullptr) end = start;
     else old->prev = add;
   }
 
+  // Dequeue 
   void pop() {
     if (end == nullptr) return;
-    NodeListElement* old = end;
+    ListElement<T>* old = end;
     if (end->prev != nullptr) end = end->prev;
     else memset(this, 0x0, sizeof(Queue));
     delete old;
   };
 
-  Node peek() {
+  T front() {
     return end->n;
   }
 };
 
 /* bad queue thingy with linear insert because brain no worky 
 struct Queue {
-  NodeListElement* start;
+  ListElement* start;
 
   Queue() {
     memset(this, 0x0, sizeof(Queue));
@@ -111,13 +117,13 @@ struct Queue {
   }
 
   void push(Node nodeToAdd) {
-    NodeListElement* add = new NodeListElement(nodeToAdd);
+    ListElement* add = new ListElement(nodeToAdd);
     if (start == nullptr) {
       start = add;
       return;
     }
-    NodeListElement* prev = start;
-    NodeListElement* curr = start->next;
+    ListElement* prev = start;
+    ListElement* curr = start->next;
     while (curr != nullptr) {
       prev = curr;
       curr = curr->next;
@@ -126,7 +132,7 @@ struct Queue {
   }
 
   void pop() {
-    NodeListElement* next = start->next;
+    ListElement* next = start->next;
     delete start;
     start = next;
   };
