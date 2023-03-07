@@ -58,7 +58,7 @@ int main() {
   for (int i = 0; i < poi; i++) {
     if (isdigit(postfixOut[i])) {
       stk.push(new Node(postfixOut[i]));
-      return;
+      continue;
     }
     // We are now dealing with an operator
     Node* t1 = stk.top();
