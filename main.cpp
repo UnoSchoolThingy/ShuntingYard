@@ -9,6 +9,13 @@
 
 using namespace std;
 
+void printPrefix(Node* tree) {
+  if (tree == nullptr) return;
+  cout << tree->data << ' ';
+  printPrefix(tree->left);
+  printPrefix(tree->right);
+}
+
 int main() {
   char rawExpression[100];
   cout << "Enter expression: ";
@@ -17,7 +24,6 @@ int main() {
   char postfixOut[100];
   memset(postfixOut, 0x0, 100);
   int poi = 0;
-  cout << "Postfix notation: ";
   Stack<char> opStack;
   int inputLen = strlen(rawExpression);
   while (rawExpression[inputLen - 1] == ' ') inputLen--;
@@ -49,10 +55,13 @@ int main() {
     postfixOut[poi++] = opStack.top();    
     opStack.pop();
   }
+  /* Print postfix 
+  cout << "Postfix notation: ";
   for (int i = 0; i < poi; i++) {
     cout << postfixOut[i] << ' ';
   }
   cout << endl;
+  */
   // We have the postfix queue, time to construct the binary expression tree
   Stack<Node*> stk;
   for (int i = 0; i < poi; i++) {
@@ -72,7 +81,27 @@ int main() {
   }
   Node* treetop = stk.top(); // The very tippy top of the tree! 
   stk.pop();
-
+ insaneLabel:
+  cout << "Tree thingy done, enter print format (in, pre, post): ";
+  char in[50];
+  cin >> in;
+  if (strcmp(in, "in") == 0) { // Infix 
+    cout << "( " << rawExpression << " )" << endl;
+  }
+  else if (strcmp(in, "pre") == 0) { // Prefix
+    // Actually traverse the tree for this one
+    printPrefix(treetop);
+  }
+  else if (strcmp(in, "post") == 0) { // Postfix
+    for (int i = 0; i < poi; i++) {
+      cout << postfixOut[i] << ' ';
+    }
+    cout << endl;
+  }
+  else {
+    cout << "Invalid input!\n";
+    goto insaneLabel;
+  }
   /*
   char* token = strtok(rawExpression, " ");
   while (token) {
