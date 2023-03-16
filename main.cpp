@@ -9,6 +9,27 @@
 
 using namespace std;
 
+// Printing funcs are basically the same as the ones from https://en.wikipedia.org/wiki/Binary_expression_tree
+
+// Print tree in infix 
+void printInfix(Node* tree) {
+  if (tree == nullptr) return;
+  if (Utils::isOperator(tree->data)) cout << "( ";
+  printInfix(tree->left);
+  cout << tree->data << ' ';
+  printInfix(tree->right);
+  if (Utils::isOperator(tree->data)) cout << ") ";
+}
+
+// Print tree for postfix
+void printPostfix(Node* tree) {
+  if (tree == nullptr) return;
+  printPostfix(tree->left);
+  printPostfix(tree->right);
+  cout << tree->data << ' ';
+}
+
+// Print tree in prefix 
 void printPrefix(Node* tree) {
   if (tree == nullptr) return;
   cout << tree->data << ' ';
@@ -85,23 +106,21 @@ int main() {
   cout << "Tree thingy done, enter print format (in, pre, post): ";
   char in[50];
   cin >> in;
-  if (strcmp(in, "in") == 0) { // Infix 
-    cout << "( " << rawExpression << " )" << endl;
+  if (strcmp(in, "in") == 0) { // Infix
+    printInfix(treetop);
   }
   else if (strcmp(in, "pre") == 0) { // Prefix
     // Actually traverse the tree for this one
     printPrefix(treetop);
   }
   else if (strcmp(in, "post") == 0) { // Postfix
-    for (int i = 0; i < poi; i++) {
-      cout << postfixOut[i] << ' ';
-    }
-    cout << endl;
+    printPostfix(treetop);
   }
   else {
     cout << "Invalid input!\n";
     goto insaneLabel;
   }
+  cout << endl;
   /*
   char* token = strtok(rawExpression, " ");
   while (token) {
